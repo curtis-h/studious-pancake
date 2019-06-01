@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+  <title>Obelisk Studios</title>
+
+  <link href="assets/style.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Limelight" rel="stylesheet" id="fontLink">
+
+  <script type="text/javascript" src="assets/almond.js"></script>
+</head>
+<body>
+  <div style="opacity: 0; position: absolute; top: -1313px;">&nbsp;</div>
+  <canvas id="canvas" height="100%" width="100%"></canvas>
+  <script type="text/javascript" src="assets/bundle.js"></script>
+  <script type="text/javascript">
+    window.addEventListener("load", function(event) {
+      requirejs(['init'], function(App) { App.init() });
+    });
+  </script>
+</body>
+</html>
