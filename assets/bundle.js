@@ -33,8 +33,9 @@ define("scene", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Scene = (function () {
-        function Scene() {
+        function Scene(canvas) {
             var _this = this;
+            this.canvas = canvas;
             this.fps = 30;
             this.frameInterval = 1000 / this.fps;
             this.startTime = 0;
@@ -64,8 +65,7 @@ define("sunsetScene", ["require", "exports", "scene"], function (require, export
     var SunsetScene = (function (_super) {
         __extends(SunsetScene, _super);
         function SunsetScene(canvas) {
-            var _this = _super.call(this) || this;
-            _this.canvas = canvas;
+            var _this = _super.call(this, canvas) || this;
             _this.pos = _this.setScenePositions(canvas);
             _this.ticks = 0;
             _this.time = 0;
@@ -360,14 +360,73 @@ define("terrain", ["require", "exports"], function (require, exports) {
     }());
     exports.default = Terrain;
 });
-define("init", ["require", "exports", "canvas", "sunsetScene"], function (require, exports, canvas_1, sunsetScene_1) {
+define("fractals/sierpinski", ["require", "exports", "scene"], function (require, exports, scene_2) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    scene_2 = __importDefault(scene_2);
+    var SierpinskiScene = (function (_super) {
+        __extends(SierpinskiScene, _super);
+        function SierpinskiScene() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.time = 0;
+            return _this;
+        }
+        SierpinskiScene.prototype.render = function (time) {
+            var bounds = this.canvas.bounds;
+            this.time = time;
+            this.canvas.context.clearRect(0, 0, bounds.width, bounds.height);
+            this.canvas.context.strokeStyle = "rgba(255, 255, 255)";
+            this.canvas.context.beginPath();
+            this.trefoilKnot();
+        };
+        SierpinskiScene.prototype.fractalLine = function (x, y, angle, iteration) {
+            if (iteration > 13)
+                return;
+            var ctx = this.canvas.context;
+            var length = 200 / iteration;
+            var radian = 0 - Math.PI / 2 + angle * Math.PI / 180;
+            var cx = x + (length * Math.cos(radian));
+            var cy = y + (length * Math.sin(radian));
+            ctx.moveTo(x, y);
+            ctx.lineTo(cx, cy);
+            ctx.stroke();
+            var adjust = 360 * Math.sin(this.time * 0.00005);
+            this.fractalLine(cx, cy, angle - adjust, iteration + 1);
+            this.fractalLine(cx, cy, angle + adjust, iteration + 1);
+        };
+        SierpinskiScene.prototype.trefoilKnot = function () {
+            var c = this.canvas.bounds;
+            var x = this.canvas.context;
+            var t = this.time * 0.00005;
+            var S = Math.sin;
+            var C = Math.cos;
+            var T = Math.tan;
+            var w = c.width / 2;
+            var a = 2;
+            var b = 3;
+            var d = 2;
+            var z;
+            var i = 0;
+            var width = c.width;
+            var f = function (g, i) { return d * g(a * i / 2) + g(-i / b); };
+            for (i = width; i > 0; i--) {
+                z = 7;
+                x.arc(w + w * (S(t) + f(S, i) * C(t)) / z, 540 + w * f(C, i) / z, w / z / z, 0, 6);
+            }
+            x.stroke();
+        };
+        return SierpinskiScene;
+    }(scene_2.default));
+    exports.default = SierpinskiScene;
+});
+define("init", ["require", "exports", "canvas", "fractals/sierpinski"], function (require, exports, canvas_1, sierpinski_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     canvas_1 = __importDefault(canvas_1);
-    sunsetScene_1 = __importDefault(sunsetScene_1);
+    sierpinski_1 = __importDefault(sierpinski_1);
     exports.init = function () {
         var canvas = new canvas_1.default();
-        var scene = new sunsetScene_1.default(canvas);
+        var scene = new sierpinski_1.default(canvas);
         scene.start();
     };
 });

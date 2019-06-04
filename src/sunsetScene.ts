@@ -13,8 +13,8 @@ export default class SunsetScene extends Scene {
   private grass: any[];
   private mountains: any;
 
-  constructor(private readonly canvas: Canvas) {
-    super();
+  constructor(canvas: Canvas) {
+    super(canvas);
     this.pos       = this.setScenePositions(canvas);
     this.ticks     = 0;
     this.time      = 0;

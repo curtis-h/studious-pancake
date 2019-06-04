@@ -1,8 +1,12 @@
+import Canvas from "./canvas";
+
 export default abstract class Scene {
   private readonly fps = 30;
   private readonly frameInterval = 1000 / this.fps;
   protected startTime  = 0;
   protected lastRender = 0;
+
+  constructor(protected readonly canvas: Canvas) {}
 
   start() {
     this.startTime = Date.now();
