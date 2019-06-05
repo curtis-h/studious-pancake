@@ -34,30 +34,31 @@ export default class SierpinskiScene extends Scene {
   }
 
   private trefoilKnot() {
-
-    const c = this.canvas.bounds;
+    const bounds = this.canvas.bounds;
     const x = this.canvas.context;
     const t = this.time * 0.00005;
     const S = Math.sin;
     const C = Math.cos;
-    const T = Math.tan;
 
-
-    const w = c.width / 2;
+    const w = bounds.width / 2;
     const a = 2//(2 * S(this.time * 0.000001));
-    const b = 3//(3 * S(this.time * 0.000002));
-    const d = 2;
+    const b = 2//(3 * S(this.time * 0.000002));
+    const c = (18 * S(this.time * 0.000001));
+    const d = 3;
 
     // let f;
     let z;
     let i=0;
-    let width = c.width;
-    const f = (g: any, i: number) => d * g(a * i / 2) + g(-i / b);
+    let width = bounds.width;
+    const f = (g: any, i: number) => a * g(b * i / c) + g(-i / d);
 
     for(i = width; i > 0; i--) {
-        z = 7//7 + f(S, i) * S(t) - Z * C(t);
-
-        x.arc(w + w * (S(t) + f(S, i) * C(t)) / z, 540 + w * f(C, i) / z, w / z / z, 0, 6)
+      z = 7//7 + f(S, i) * S(t) - S(i) * C(t);
+      // const arcX = w + w * (S(t) + f(S, i) * C(t)) / z;
+      const arcX = w + w * (f(S, i)) / z;
+      const arcY = 540 + w * f(C, i) / z
+      const radius = w / z / z;
+      x.arc(arcX, arcY, radius, 0, 2 * Math.PI);
     }
     x.stroke();
   }
